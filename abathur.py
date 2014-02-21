@@ -9,6 +9,11 @@ def _perform_extraction(ident_file, query_file, output_file, query_ident):
     query_ident: whether we should query the IDs or just use the file as IDs
     """
 
+    # first need to check whether we need to get a list of IDs.
+    if (query_ident):
+        # need to find the list of IDs using the given query.
+        pass
+
 
 def perform_extraction(prog, raw_args):
     parser = argparse.ArgumentParser(
