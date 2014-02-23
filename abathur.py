@@ -2,6 +2,16 @@
 
 import argparse
 import sys
+from os.path import expanduser
+import json
+
+
+def _get_db_connection_string():
+    config_file = expanduser("~/.abathur.conf")
+    with open(config_file) as fp:
+        configs = json.load(fp)
+
+    return configs["db_connection_string"]
 
 
 def _perform_extraction(ident_file, query_file, output_file, query_ident):
