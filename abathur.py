@@ -4,6 +4,7 @@ import argparse
 import sys
 from os.path import expanduser
 import json
+from sqlalchemy import create_engine
 
 
 def _get_db_connection_string():
@@ -19,10 +20,26 @@ def _perform_extraction(ident_file, query_file, output_file, query_ident):
     query_ident: whether we should query the IDs or just use the file as IDs
     """
 
+    conn_string = _get_db_connection_string()
+    engine = create_engine(conn_string)
+    conn = engine.connect()
+
+    id_list = []
     # first need to check whether we need to get a list of IDs.
     if query_ident:
         # need to find the list of IDs using the given query.
-        pass
+        with open(ident_file, "r") as ident_query_file:
+            the_query = ident_query_file.read()
+            result = conn.execute(the_query)
+            for row in result:
+                id_list.append(row[0])
+    else:
+        with open(ident_file, "r") as ident_query_file:
+            for line in ident_query_file:
+                id_list.append(line[:-1])
+
+    # Now we have the ID list, parse and execute the queries in the query_file.
+    raise NotImplementedError
 
 
 def perform_extraction(prog, raw_args):
