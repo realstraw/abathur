@@ -33,7 +33,7 @@ def perform_extraction(prog, raw_args):
         "file that contains a list of IDs.")
     args = parser.parse_args(raw_args)
 
-    print "queries: {}\noutput: {}".format(args.queries, args.output)
+    print "Queries: {}\nOutput: {}".format(args.queries, args.output)
 
 
 if __name__ == "__main__":
