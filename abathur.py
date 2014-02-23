@@ -10,7 +10,7 @@ def _perform_extraction(ident_file, query_file, output_file, query_ident):
     """
 
     # first need to check whether we need to get a list of IDs.
-    if (query_ident):
+    if query_ident:
         # need to find the list of IDs using the given query.
         pass
 
