@@ -5,6 +5,7 @@ import sys
 from os.path import expanduser
 import json
 from sqlalchemy import create_engine
+import csv
 
 
 def _get_db_connection_string():
@@ -28,18 +29,26 @@ def _perform_extraction(ident_file, query_file, output_file, query_ident):
     # first need to check whether we need to get a list of IDs.
     if query_ident:
         # need to find the list of IDs using the given query.
-        with open(ident_file, "r") as ident_query_file:
+        with open(ident_file, "rb") as ident_query_file:
             the_query = ident_query_file.read()
             result = conn.execute(the_query)
             for row in result:
                 id_list.append(row[0])
     else:
-        with open(ident_file, "r") as ident_query_file:
+        with open(ident_file, "rb") as ident_query_file:
             for line in ident_query_file:
                 id_list.append(line[:-1])
 
     # Now we have the ID list, parse and execute the queries in the query_file.
-    raise NotImplementedError
+    query_file_dict = json.load(query_file)
+    with open(output_file, "wb") as the_output_file:
+        csvwriter = csv.writer(the_output_file)
+        for ident in id_list:
+            row = [ident, ]
+            for feat_name, feat_query in query_file_dict.iteritems():
+                feat_value = conn.execute(feat_query.format(ident=ident))
+                row.append(feat_value)
+            csvwriter.writerow(row)
 
 
 def perform_extraction(prog, raw_args):
