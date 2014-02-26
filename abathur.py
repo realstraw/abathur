@@ -37,12 +37,17 @@ def _perform_extraction(ident_file, query_file, output_file, query_ident):
     else:
         with open(ident_file, "rb") as ident_query_file:
             for line in ident_query_file:
-                id_list.append(line[:-1])
+                if line[-1] == "\n":
+                    line = line[:-1]
+                id_list.append(line)
 
     # Now we have the ID list, parse and execute the queries in the query_file.
     query_file_dict = json.load(query_file)
     with open(output_file, "wb") as the_output_file:
         csvwriter = csv.writer(the_output_file)
+        # write out the header
+        csvwriter.writerow(query_file_dict.keys())
+
         for ident in id_list:
             row = [ident, ]
             for feat_name, feat_query in query_file_dict.iteritems():
