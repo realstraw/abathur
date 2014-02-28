@@ -50,7 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args(args=sys.argv[1:2])
 
     if args.command == "extract":
-        new_prog = "-".join(sys.argv[:2])
+        new_prog = " ".join(sys.argv[:2])
         new_args = sys.argv[2:]
 
         perform_extraction(new_prog, new_args)
