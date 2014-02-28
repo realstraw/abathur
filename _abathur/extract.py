@@ -50,6 +50,8 @@ class Extractor(object):
             for ident in id_list:
                 row = [ident, ]
                 for feat_name, feat_query in query_file_dict.iteritems():
-                    feat_value = conn.execute(feat_query.format(ident=ident))
+                    result = conn.execute(feat_query.format(ident=ident))
+                    feat_value = result.fetchone()[0]
                     row.append(feat_value)
+                    result.close()
                 csvwriter.writerow(row)
