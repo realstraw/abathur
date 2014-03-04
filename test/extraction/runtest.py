@@ -20,7 +20,6 @@ class TestExtractFunctions(unittest.TestCase):
     DB_NAME = "testdb.db"
 
     def setUp(self):
-        print "calling setUp"
         tmp_dir = self.__class__.TMP_DIR
         db_name = self.__class__.DB_NAME
         # Setup the tmp dir and a small database for testing
@@ -76,7 +75,6 @@ class TestExtractFunctions(unittest.TestCase):
         ])
 
     def tearDown(self):
-        print "Calling tearDown"
         tmp_dir = self.__class__.TMP_DIR
         shutil.rmtree(tmp_dir)
 
@@ -96,7 +94,10 @@ class TestExtractFunctions(unittest.TestCase):
         self.assertEqual(result.fetchone()[0], 6)
         result.close()
 
-    def test_extractor(self):
+    def test_extractor_query_ident(self):
+        """
+        Testing the Extractor with query_ident = True
+        """
         tmp_dir = self.__class__.TMP_DIR
         db_name = self.__class__.DB_NAME
 
@@ -112,6 +113,32 @@ class TestExtractFunctions(unittest.TestCase):
         extractor = Extractor(
             db_conn_str, test_ident_query_filename, test_query_filename,
             output_filename, True)
+        extractor.perform_extraction()
+
+        sample_output_filename = os.path.join(
+            test_dir_name, "sample_test_output.csv")
+
+        self.assertTrue(filecmp.cmp(output_filename, sample_output_filename))
+
+    def test_extractor_no_query_ident(self):
+        """
+        Test the Extractor with query_ident = False
+        """
+        tmp_dir = self.__class__.TMP_DIR
+        db_name = self.__class__.DB_NAME
+
+        db_conn_str = "sqlite:///{tmp_dir}/{db_name}".format(
+            tmp_dir=tmp_dir, db_name=db_name)
+
+        test_dir_name = os.path.dirname(__file__)
+        test_ident_query_filename = os.path.join(
+            test_dir_name, "test_ident_file.txt")
+        test_query_filename = os.path.join(
+            test_dir_name, "test_query_file.json")
+        output_filename = os.path.join(tmp_dir, "test_output.csv")
+        extractor = Extractor(
+            db_conn_str, test_ident_query_filename, test_query_filename,
+            output_filename, False)
         extractor.perform_extraction()
 
         sample_output_filename = os.path.join(
