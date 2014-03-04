@@ -1,5 +1,6 @@
 import unittest
-from sqlalchemy import create_engine, MetaData, Column, Table, Integer, String
+from sqlalchemy import (
+    create_engine, MetaData, Column, Table, Integer, String, ForeignKey)
 import os
 import shutil
 
@@ -26,17 +27,16 @@ class TestExtractFunctions(unittest.TestCase):
         metadata = MetaData()
 
         # Test tables
+        conn = engine.connect()
+
+        # User table
         user = Table(
             'user', metadata,
             Column('user_id', Integer, primary_key=True),
             Column('user_name', String(16), nullable=False),
             Column('email_address', String(60))
         )
-
         user.create(engine)
-
-        conn = engine.connect()
-
         conn.execute(user.insert(), [
             {"user_id": 1, "user_name": "Kevin", "email_address":
                 "kevin@testmail.com"},
@@ -46,6 +46,26 @@ class TestExtractFunctions(unittest.TestCase):
                 "matt@testmail.com"},
             {"user_id": 4, "user_name": "Ryan", "email_address":
                 "ryan@testmail.com"},
+        ])
+
+        # Follow table
+        follow = Table(
+            'follow', metadata,
+            Column(
+                'user_id', Integer, ForeignKey("user.user_id"),
+                nullable=False, primary_key=True),
+            Column(
+                'follow_user_id', Integer, ForeignKey("user.user_id"),
+                nullable=False, primary_key=True)
+        )
+        follow.create(engine)
+        conn.execute(follow.insert(), [
+            {"user_id": 2, "follow_user_id": 1},
+            {"user_id": 3, "follow_user_id": 1},
+            {"user_id": 4, "follow_user_id": 1},
+            {"user_id": 1, "follow_user_id": 2},
+            {"user_id": 3, "follow_user_id": 2},
+            {"user_id": 1, "follow_user_id": 3},
         ])
 
     def tearDown(self):
@@ -62,7 +82,11 @@ class TestExtractFunctions(unittest.TestCase):
         engine = create_engine(db_conn_str)
         conn = engine.connect()
         result = conn.execute("select count(*) from user")
-        self.assertEqual(result.fetchone()[0], 3)
+        self.assertEqual(result.fetchone()[0], 4)
+        result.close()
+
+        result = conn.execute("select count(*) from follow")
+        self.assertEqual(result.fetchone()[0], 6)
         result.close()
 
 
