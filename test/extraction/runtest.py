@@ -3,6 +3,13 @@ from sqlalchemy import (
     create_engine, MetaData, Column, Table, Integer, String, ForeignKey)
 import os
 import shutil
+import sys
+import filecmp
+
+# A hack to find _abathur package, needs to be changed properly
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from _abathur.extract import Extractor
 
 
 class TestExtractFunctions(unittest.TestCase):
@@ -88,6 +95,29 @@ class TestExtractFunctions(unittest.TestCase):
         result = conn.execute("select count(*) from follow")
         self.assertEqual(result.fetchone()[0], 6)
         result.close()
+
+    def test_extractor(self):
+        tmp_dir = self.__class__.TMP_DIR
+        db_name = self.__class__.DB_NAME
+
+        db_conn_str = "sqlite:///{tmp_dir}/{db_name}".format(
+            tmp_dir=tmp_dir, db_name=db_name)
+
+        test_dir_name = os.path.dirname(__file__)
+        test_ident_query_filename = os.path.join(
+            test_dir_name, "test_ident_query_file.sql")
+        test_query_filename = os.path.join(
+            test_dir_name, "test_query_file.json")
+        output_filename = os.path.join(tmp_dir, "test_output.csv")
+        extractor = Extractor(
+            db_conn_str, test_ident_query_filename, test_query_filename,
+            output_filename, True)
+        extractor.perform_extraction()
+
+        sample_output_filename = os.path.join(
+            test_dir_name, "sample_test_output.csv")
+
+        self.assertTrue(filecmp.cmp(output_filename, sample_output_filename))
 
 
 if __name__ == "__main__":

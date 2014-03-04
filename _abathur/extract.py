@@ -41,11 +41,13 @@ class Extractor(object):
 
         # Now we have the ID list, parse and execute the queries in the
         # query_file.
-        query_file_dict = json.load(self._query_file)
+        with open(self._query_file, "r") as the_query_file:
+            query_file_dict = json.load(the_query_file)
+
         with open(self._output_file, "wb") as the_output_file:
-            csvwriter = csv.writer(the_output_file)
+            csvwriter = csv.writer(the_output_file, lineterminator="\n")
             # write out the header
-            csvwriter.writerow(query_file_dict.keys())
+            csvwriter.writerow(["ident", ] + query_file_dict.keys())
 
             for ident in id_list:
                 row = [ident, ]
