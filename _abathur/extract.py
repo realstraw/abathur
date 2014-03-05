@@ -30,42 +30,42 @@ class IndexedDict(object):
 class Extractor(object):
 
     def __init__(
-            self, db_connection_string, ident_file, query_file, output_file,
-            query_ident):
+            self, db_connection_string, param_file, query_file, output_file,
+            query_param):
         self._db_connection_string = db_connection_string
-        self._ident_file = ident_file
+        self._param_file = param_file
         self._query_file = query_file
         self._output_file = output_file
-        self._query_ident = query_ident
+        self._query_param = query_param
 
     def perform_extraction(self):
         """
-        query_ident: whether we should query the IDs or just use the file as
-        IDs
+        query_param: whether we should query the params or just use the file as
+        params
         """
 
         engine = create_engine(self._db_connection_string)
         conn = engine.connect()
 
         param_keys = []
-        id_list = []
+        param_list = []
         # first need to check whether we need to get a list of IDs.
-        if self._query_ident:
+        if self._query_param:
             # need to find the list of IDs using the given query.
-            with open(self._ident_file, "rb") as ident_query_file:
-                the_query = ident_query_file.read()
+            with open(self._param_file, "rb") as param_query_file:
+                the_query = param_query_file.read()
                 result = conn.execute(the_query)
                 param_keys = result.keys()
                 for row in result:
-                    id_list.append(IndexedDict(param_keys, row))
+                    param_list.append(IndexedDict(param_keys, row))
         else:
-            with open(self._ident_file, "rb") as ident_query_file:
-                csvreader = csv.reader(ident_query_file)
+            with open(self._param_file, "rb") as param_query_file:
+                csvreader = csv.reader(param_query_file)
                 param_keys = csvreader.next()
                 for row in csvreader:
-                    id_list.append(IndexedDict(param_keys, row))
+                    param_list.append(IndexedDict(param_keys, row))
 
-        # Now we have the ID list, parse and execute the queries in the
+        # Now we have the param list, parse and execute the queries in the
         # query_file.
         with open(self._query_file, "r") as the_query_file:
             query_file_dict = json.load(the_query_file)
@@ -75,7 +75,7 @@ class Extractor(object):
             # write out the header
             csvwriter.writerow(param_keys + query_file_dict.keys())
 
-            for indexed_dict in id_list:
+            for indexed_dict in param_list:
                 row = list(indexed_dict.values())
                 for feat_name, feat_query in query_file_dict.iteritems():
                     result = conn.execute(

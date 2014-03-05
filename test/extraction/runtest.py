@@ -100,9 +100,9 @@ class TestExtractFunctions(unittest.TestCase):
         self.assertEqual(result.fetchone()[0], 9)
         result.close()
 
-    def test_extractor_query_ident(self):
+    def test_extractor_query_param(self):
         """
-        Testing the Extractor with query_ident = True
+        Testing the Extractor with query_param = True
         """
         tmp_dir = self.__class__.TMP_DIR
         db_name = self.__class__.DB_NAME
@@ -111,13 +111,13 @@ class TestExtractFunctions(unittest.TestCase):
             tmp_dir=tmp_dir, db_name=db_name)
 
         test_dir_name = os.path.dirname(__file__)
-        test_ident_query_filename = os.path.join(
-            test_dir_name, "test_ident_query_file.sql")
+        test_param_query_filename = os.path.join(
+            test_dir_name, "test_param_query_file.sql")
         test_query_filename = os.path.join(
             test_dir_name, "test_query_file.json")
         output_filename = os.path.join(tmp_dir, "test_output.csv")
         extractor = Extractor(
-            db_conn_str, test_ident_query_filename, test_query_filename,
+            db_conn_str, test_param_query_filename, test_query_filename,
             output_filename, True)
         extractor.perform_extraction()
 
@@ -126,9 +126,9 @@ class TestExtractFunctions(unittest.TestCase):
 
         self.assertTrue(filecmp.cmp(output_filename, sample_output_filename))
 
-    def test_extractor_no_query_ident(self):
+    def test_extractor_no_query_param(self):
         """
-        Test the Extractor with query_ident = False
+        Test the Extractor with query_param = False
         """
         tmp_dir = self.__class__.TMP_DIR
         db_name = self.__class__.DB_NAME
@@ -137,13 +137,13 @@ class TestExtractFunctions(unittest.TestCase):
             tmp_dir=tmp_dir, db_name=db_name)
 
         test_dir_name = os.path.dirname(__file__)
-        test_ident_query_filename = os.path.join(
-            test_dir_name, "test_ident_file.csv")
+        test_param_query_filename = os.path.join(
+            test_dir_name, "test_param_file.csv")
         test_query_filename = os.path.join(
             test_dir_name, "test_query_file.json")
         output_filename = os.path.join(tmp_dir, "test_output.csv")
         extractor = Extractor(
-            db_conn_str, test_ident_query_filename, test_query_filename,
+            db_conn_str, test_param_query_filename, test_query_filename,
             output_filename, False)
         extractor.perform_extraction()
 
