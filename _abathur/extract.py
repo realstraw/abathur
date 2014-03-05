@@ -23,6 +23,9 @@ class IndexedDict(object):
     def values(self):
         return self._values
 
+    def to_dict(self):
+        return dict(zip(self._keys, self._values))
+
 
 class Extractor(object):
 
@@ -60,7 +63,7 @@ class Extractor(object):
                 csvreader = csv.reader(ident_query_file)
                 param_keys = csvreader.next()
                 for row in csvreader:
-                    id_list.append(IndexedDict, row)
+                    id_list.append(IndexedDict(param_keys, row))
 
         # Now we have the ID list, parse and execute the queries in the
         # query_file.
@@ -75,7 +78,8 @@ class Extractor(object):
             for indexed_dict in id_list:
                 row = list(indexed_dict.values())
                 for feat_name, feat_query in query_file_dict.iteritems():
-                    result = conn.execute(feat_query.format(ident=ident))
+                    result = conn.execute(
+                        feat_query.format(**indexed_dict.to_dict()))
                     feat_value = result.fetchone()[0]
                     row.append(feat_value)
                     result.close()

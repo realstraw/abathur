@@ -40,18 +40,21 @@ class TestExtractFunctions(unittest.TestCase):
             'user', metadata,
             Column('user_id', Integer, primary_key=True),
             Column('user_name', String(16), nullable=False),
-            Column('email_address', String(60))
+            Column('email_address', String(60)),
+            Column('active', Integer, nullable=False)
         )
         user.create(engine)
         conn.execute(user.insert(), [
             {"user_id": 1, "user_name": "Kevin", "email_address":
-                "kevin@testmail.com"},
+                "kevin@testmail.com", "active": 1},
             {"user_id": 2, "user_name": "Lucy", "email_address":
-                "lucy@testmail.com"},
+                "lucy@testmail.com", "active": 1},
             {"user_id": 3, "user_name": "Matt", "email_address":
-                "matt@testmail.com"},
+                "matt@testmail.com", "active": 1},
             {"user_id": 4, "user_name": "Ryan", "email_address":
-                "ryan@testmail.com"},
+                "ryan@testmail.com", "active": 1},
+            {"user_id": 5, "user_name": "Ben", "email_address":
+                "ben@testmail.com", "active": 0},
         ])
 
         # Follow table
@@ -72,6 +75,9 @@ class TestExtractFunctions(unittest.TestCase):
             {"user_id": 1, "follow_user_id": 2},
             {"user_id": 3, "follow_user_id": 2},
             {"user_id": 1, "follow_user_id": 3},
+            {"user_id": 1, "follow_user_id": 5},
+            {"user_id": 2, "follow_user_id": 5},
+            {"user_id": 5, "follow_user_id": 1},
         ])
 
     def tearDown(self):
@@ -87,11 +93,11 @@ class TestExtractFunctions(unittest.TestCase):
         engine = create_engine(db_conn_str)
         conn = engine.connect()
         result = conn.execute("select count(*) from user")
-        self.assertEqual(result.fetchone()[0], 4)
+        self.assertEqual(result.fetchone()[0], 5)
         result.close()
 
         result = conn.execute("select count(*) from follow")
-        self.assertEqual(result.fetchone()[0], 6)
+        self.assertEqual(result.fetchone()[0], 9)
         result.close()
 
     def test_extractor_query_ident(self):
@@ -132,7 +138,7 @@ class TestExtractFunctions(unittest.TestCase):
 
         test_dir_name = os.path.dirname(__file__)
         test_ident_query_filename = os.path.join(
-            test_dir_name, "test_ident_file.txt")
+            test_dir_name, "test_ident_file.csv")
         test_query_filename = os.path.join(
             test_dir_name, "test_query_file.json")
         output_filename = os.path.join(tmp_dir, "test_output.csv")
