@@ -1,4 +1,5 @@
 {
-    "n_followers": "select count(*) from follow where follow_user_id={ident}",
-    "n_follow": "select count(*) from follow where user_id={ident}"
+    "n_followers": "select count(*) from follow f join user as u1 on f.user_id=u1.user_id join user u2 on f.follow_user_id=u2.user_id where f.follow_user_id={ident} and u1.active={param_active}",
+    "n_follow": "select count(*) from follow f join user as u1 on f.user_id=u1.user_id join user u2 on f.follow_user_id=u2.user_id where f.user_id={ident} and u2.active={param_active}",
+    "all_follower_count": "select count(*) from follow f where f.follow_user_id={ident}"
 }
