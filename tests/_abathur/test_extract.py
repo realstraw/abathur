@@ -112,9 +112,9 @@ class TestExtractFunctions(unittest.TestCase):
 
         test_dir_name = os.path.dirname(__file__)
         test_param_query_filename = os.path.join(
-            test_dir_name, "test_param_query_file.sql")
+            test_dir_name, "data/test_param_query_file.sql")
         test_query_filename = os.path.join(
-            test_dir_name, "test_query_file.json")
+            test_dir_name, "data/test_query_file.json")
         output_filename = os.path.join(tmp_dir, "test_output.csv")
         extractor = Extractor(
             db_conn_str, test_param_query_filename, test_query_filename,
@@ -122,7 +122,7 @@ class TestExtractFunctions(unittest.TestCase):
         extractor.perform_extraction()
 
         sample_output_filename = os.path.join(
-            test_dir_name, "sample_test_output.csv")
+            test_dir_name, "data/sample_test_output.csv")
 
         self.assertTrue(filecmp.cmp(output_filename, sample_output_filename))
 
@@ -138,9 +138,9 @@ class TestExtractFunctions(unittest.TestCase):
 
         test_dir_name = os.path.dirname(__file__)
         test_param_query_filename = os.path.join(
-            test_dir_name, "test_param_file.csv")
+            test_dir_name, "data/test_param_file.csv")
         test_query_filename = os.path.join(
-            test_dir_name, "test_query_file.json")
+            test_dir_name, "data/test_query_file.json")
         output_filename = os.path.join(tmp_dir, "test_output.csv")
         extractor = Extractor(
             db_conn_str, test_param_query_filename, test_query_filename,
@@ -148,7 +148,7 @@ class TestExtractFunctions(unittest.TestCase):
         extractor.perform_extraction()
 
         sample_output_filename = os.path.join(
-            test_dir_name, "sample_test_output.csv")
+            test_dir_name, "data/sample_test_output.csv")
 
         self.assertTrue(filecmp.cmp(output_filename, sample_output_filename))
 
