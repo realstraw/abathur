@@ -8,6 +8,8 @@ class Clusterer(object):
         self._input_filename = input_filename
         self._output_filename = output_filename
         self._ignore = ignore
+        # unless explicitly set, the default number of kmeans to be run is 10
+        self.iter = 10
 
     def perform_clustering(self):
         # First read the input csv in as numpy array
@@ -19,8 +21,6 @@ class Clusterer(object):
 
         # Find and return the kmean to output
         code = self._get_cluster(feat_array, k)
-
-        print code
 
         with open(self._output_filename, "wb") as output_file:
             output_file.writelines([str(i) + "\n" for i in code])
@@ -38,6 +38,6 @@ class Clusterer(object):
         # Normalise the feature array
         whitened = whiten(feat_array)
 
-        codebook, _ = kmeans(whitened, k)
+        codebook, _ = kmeans(whitened, k, iter=self.iter)
         code, _ = vq(whitened, codebook)
         return code

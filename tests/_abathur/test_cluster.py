@@ -25,15 +25,6 @@ class TestClustererFunctions(unittest.TestCase):
         tmp_dir = self.__class__.TMP_DIR
         shutil.rmtree(tmp_dir)
 
-    def test_adhoc(self):
-
-        test_dir_name = os.path.dirname(__file__)
-        feat_array_fn = os.path.join(
-            test_dir_name, "data", "feature_array.csv")
-
-        feat_array = np.loadtxt(feat_array_fn, delimiter=",", skiprows=1)
-        print feat_array
-
     def test_determine_k(self):
         test_dir_name = os.path.dirname(__file__)
         feat_array_fn = os.path.join(
@@ -53,12 +44,17 @@ class TestClustererFunctions(unittest.TestCase):
         output_fn = os.path.join(tmp_dir, "code.txt")
 
         clusterer = Clusterer(feat_array_fn, output_fn, [])
+        clusterer.iter = 100
         clusterer.perform_clustering()
 
         sample_output_filename = os.path.join(
             test_dir_name, "data", "sample_cluster_code.txt")
+        sample_inv_output_filename = os.path.join(
+            test_dir_name, "data", "sample_cluster_code_inv.txt")
 
-        # self.assertTrue(filecmp.cmp(output_fn, sample_output_filename))
+        same_as_sample = filecmp.cmp(output_fn, sample_output_filename)
+        same_as_inv = filecmp.cmp(output_fn, sample_inv_output_filename)
+        self.assertTrue(same_as_sample or same_as_inv)
 
 
 if __name__ == "__main__":
