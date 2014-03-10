@@ -4,7 +4,8 @@ import argparse
 import sys
 from os.path import expanduser
 import json
-from _abathur.extract import Extractor, Clusterer
+from _abathur.extract import Extractor
+from _abathur.cluster import Clusterer
 
 
 def _get_db_connection_string():
