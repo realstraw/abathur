@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import vq, kmeans, whiten
+import csv
 
 
 class Clusterer(object):
@@ -12,6 +13,10 @@ class Clusterer(object):
         self.iter = 10
 
     def perform_clustering(self):
+        feature_data = []
+        with open(self._input_filename, "rb") as input_file:
+            csvreader = csv.reader(input_file)
+            header = csvreader.next()
         # First read the input csv in as numpy array
         feat_array = np.loadtxt(
             self._input_filename, delimiter=",", skiprows=1)  # skip header
