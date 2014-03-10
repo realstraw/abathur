@@ -4,7 +4,7 @@ import argparse
 import sys
 from os.path import expanduser
 import json
-from _abathur.extract import Extractor
+from _abathur.extract import Extractor, Clusterer
 
 
 def _get_db_connection_string():
@@ -42,15 +42,39 @@ def perform_extraction(prog, raw_args):
     print "Queries: {}\nOutput: {}".format(args.queries, args.output)
 
 
+def perform_clustering(prog, raw_args):
+    parser = argparse.ArgumentParser(
+        prog=prog,
+        description="Perform clustering of the given data set.")
+    parser.add_argument(
+        "feat_filename", help="The input feature file")
+    parser.add_argument(
+        "output", help="The output file name")
+    parser.add_argument(
+        "--ignore", nargs="*", help="The features (column names) to be "
+        "ignored. Usually the ID field.")
+    args = parser.parse_args(raw_args)
+
+    clusterer = Clusterer(args.feat_filename, args.output, args.ignore)
+    clusterer.perform_extraction()
+
+    print "Done"
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog=sys.argv[0], description="Execute abathur commands.")
     parser.add_argument(
-        'command', choices=['extract'], help="the command to be executed")
+        'command', choices=['extract', 'cluster'],
+        help="the command to be executed")
     args = parser.parse_args(args=sys.argv[1:2])
 
     if args.command == "extract":
         new_prog = " ".join(sys.argv[:2])
         new_args = sys.argv[2:]
-
         perform_extraction(new_prog, new_args)
+
+    elif args.command == "cluster":
+        new_prog = " ".join(sys.argv[:2])
+        new_args = sys.argv[2:]
+        perform_clustering(new_prog, new_args)
