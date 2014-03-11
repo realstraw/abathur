@@ -21,17 +21,18 @@ def perform_extraction(prog, raw_args):
         prog=prog,
         description="Extract (aggregated) features from a sql database.")
     parser.add_argument(
-        "param", help="the ID file or queries")
+        "param", help="the file with query params or the SQL query that "
+        "finds the params.")
     parser.add_argument(
         'queries', help="the set of queries and feature names to be executed.")
     parser.add_argument(
-        'output', help="the output file")
+        'output', help="the output file.")
     parser.add_argument(
         "--query-param",
         dest="query_param",
         action="store_true",
-        help="the given id file is a query file. by default we assume it's a "
-        "file that contains a list of IDs.")
+        help="the given param file is a query file. by default we assume it's "
+        "a file that contains a list of query params.")
     args = parser.parse_args(raw_args)
 
     db_connection_string = _get_db_connection_string()
