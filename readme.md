@@ -57,7 +57,25 @@ For help in commandline options:
 
 ## Clustering
 
-`abathur cluster`
+    usage: abathur cluster [-h] [--ignore [IGNORE [IGNORE ...]]]
+                             feat_filename output
+
+    Perform clustering of the given data set.
+
+    positional arguments:
+      feat_filename         The input feature file
+      output                The output file name
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --ignore [IGNORE [IGNORE ...]]
+                            The features (column names) to be ignored. Usually the
+                            ID field.
+
+`abathur cluster` takes a input feature file, and performs clustering. The
+output is a file with code corresponding to the cluster id for each
+corresponding row in the input feature file.
+
 
 ## Abathur Config
 
