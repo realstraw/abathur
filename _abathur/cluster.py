@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import vq, kmeans, whiten
+import pandas as pd
 
 
 class Clusterer(object):
@@ -12,9 +13,11 @@ class Clusterer(object):
         self.iter = 10
 
     def perform_clustering(self):
-        # First read the input csv in as numpy array
-        feat_array = np.loadtxt(
-            self._input_filename, delimiter=",", skiprows=1)  # skip header
+        df = pd.read_csv(self._input_filename)
+        feature_cols = list(df.columns.values)
+        for non_feat_col in self._ignore:
+            feature_cols.remove(non_feat_col)
+        feat_array = df[feature_cols].values
 
         # Then determine k
         k = self._determine_k(feat_array)

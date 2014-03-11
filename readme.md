@@ -6,7 +6,7 @@
 >
 > -- Abathur (The evolution master) tells Sarah Kerrigan about his work
 
-Abathur aim to be a comprehensive automated machine learning and data
+Abathur aims to be a easy-to-use automated machine learning and data
 torturing toolkit to make the data talk. Currently only supports extract
 features using exhaustive query execution.
 
@@ -54,6 +54,10 @@ An example of *query file* content:
 For help in commandline options:
 
     abathur extract --help
+
+## Clustering
+
+`abathur cluster`
 
 ## Abathur Config
 
