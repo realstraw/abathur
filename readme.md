@@ -12,6 +12,20 @@ features using exhaustive query execution.
 
 ## Feature Extraction
 
+    usage: abathur extract [-h] [--query-param] param queries output
+
+    Extract (aggregated) features from a sql database.
+
+    positional arguments:
+      param          the ID file or queries
+      queries        the set of queries and feature names to be executed.
+      output         the output file
+
+    optional arguments:
+      -h, --help     show this help message and exit
+      --query-param  the given id file is a query file. by default we assume it's
+                     a file that contains a list of IDs.
+
 `abathur extract` is an adhoc feature extraction tool for relational (SQL)
 databases, where every value in the feature is extracted with one query.
 Although this is not efficient in terms of computation processing, but it does
