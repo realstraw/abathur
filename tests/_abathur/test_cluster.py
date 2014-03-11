@@ -56,6 +56,17 @@ class TestClustererFunctions(unittest.TestCase):
         same_as_inv = filecmp.cmp(output_fn, sample_inv_output_filename)
         self.assertTrue(same_as_sample or same_as_inv)
 
+        # Now test the data set with non feat cols
+        feat_array_fn = os.path.join(
+            test_dir_name, "data", "feature_array_with_non_feat_cols.csv")
+        clusterer = Clusterer(feat_array_fn, output_fn, ["id", "param"])
+        clusterer.iter = 100
+        clusterer.perform_clustering()
+
+        same_as_sample = filecmp.cmp(output_fn, sample_output_filename)
+        same_as_inv = filecmp.cmp(output_fn, sample_inv_output_filename)
+        self.assertTrue(same_as_sample or same_as_inv)
+
 
 if __name__ == "__main__":
     unittest.main()
