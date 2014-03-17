@@ -25,14 +25,14 @@ class TestClustererFunctions(unittest.TestCase):
         tmp_dir = self.__class__.TMP_DIR
         shutil.rmtree(tmp_dir)
 
-    def test_determine_k(self):
+    def test_determine_max_k(self):
         test_dir_name = os.path.dirname(__file__)
         feat_array_fn = os.path.join(
             test_dir_name, "data", "feature_array.csv")
         feat_array = np.loadtxt(feat_array_fn, delimiter=",", skiprows=1)
 
         clusterer = Clusterer("_", "_", [])
-        k = clusterer._determine_k(feat_array)
+        k = clusterer._determine_max_k(feat_array)
         self.assertEqual(k, 2)
 
     def test_perform_clustering(self):
