@@ -47,7 +47,7 @@ class Clusterer(object):
 
         [1] Catherine A. Sugar and Gareth M. James (2003). "Finding the number
         of clusters in a data set: An information theoretic approach".  Journal
-        of the American Statistical Association 98 (January): 750–763.
+        of the American Statistical Association 98 (January): 750-765.
         """
         if max_cluster < 2:
             max_cluster = self._determine_max_k(feat_array)
