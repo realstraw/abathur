@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import pandas as pd
 import sys
 import os
 import shutil
@@ -25,14 +26,14 @@ class TestClustererFunctions(unittest.TestCase):
         tmp_dir = self.__class__.TMP_DIR
         shutil.rmtree(tmp_dir)
 
-    def test_determine_k(self):
+    def test_determine_max_k(self):
         test_dir_name = os.path.dirname(__file__)
         feat_array_fn = os.path.join(
             test_dir_name, "data", "feature_array.csv")
         feat_array = np.loadtxt(feat_array_fn, delimiter=",", skiprows=1)
 
         clusterer = Clusterer("_", "_", [])
-        k = clusterer._determine_k(feat_array)
+        k = clusterer._determine_max_k(feat_array)
         self.assertEqual(k, 2)
 
     def test_perform_clustering(self):
@@ -66,6 +67,33 @@ class TestClustererFunctions(unittest.TestCase):
         same_as_sample = filecmp.cmp(output_fn, sample_output_filename)
         same_as_inv = filecmp.cmp(output_fn, sample_inv_output_filename)
         self.assertTrue(same_as_sample or same_as_inv)
+
+    def test_determine_k(self):
+        """
+        Test the clusterer._dtermine_k function.
+        """
+        test_dir_name = os.path.dirname(__file__)
+        feat_array_fn = os.path.join(
+            test_dir_name, "data", "four_clusters.csv")
+        df = pd.read_csv(feat_array_fn)
+        feat_array = df[["x", "y"]].values
+
+        clusterer = Clusterer(feat_array_fn, "/dev/null", [])
+        best_k = clusterer._determine_k(feat_array, 9)
+
+        self.assertEqual(best_k, 4)
+
+        feat_array_fn = os.path.join(
+            test_dir_name, "data", "iris.csv")
+        df = pd.read_csv(feat_array_fn)
+        feat_array = df[[
+            "Sepal.Length", "Sepal.Width", "Petal.Length",
+            "Petal.Width"]].values
+
+        clusterer = Clusterer(feat_array_fn, "/dev/null", [])
+        best_k = clusterer._determine_k(feat_array, 9)
+
+        self.assertEqual(best_k, 2)
 
 
 if __name__ == "__main__":
