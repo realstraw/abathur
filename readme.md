@@ -7,12 +7,11 @@
 > -- Abathur (The evolution master) tells Sarah Kerrigan about his work
 
 Abathur aims to be a easy-to-use automated machine learning and data
-torturing toolkit to make the data talk. Currently only supports extract
-features using exhaustive query execution.
+torturing toolkit to make the data talk.
 
 ## Feature Extraction
 
-    usage: ./abathur extract [-h] [--query-param] param queries output
+    usage: abathur extract [-h] [--query-param] param queries output
 
     Extract (aggregated) features from a sql database.
 
@@ -89,8 +88,10 @@ For help in commandline options:
 
 `abathur cluster` takes a input feature file, and performs clustering. The
 output is a file with code corresponding to the cluster id for each
-corresponding row in the input feature file.
-
+corresponding row in the input feature file. It uses an information theoretic
+approch detailed in [1] estimate the best number in of clusters. The algorithm
+implemented slightly improves [1] by run the jump method multiple times and
+gets the lowest number.
 
 ## Abathur Config
 
@@ -101,3 +102,9 @@ Abathur expects a config file in `~/.abathur.conf` with the following content:
     }
 
 For more about sqlalchemy connection string see [SQLAlchemy Database URLS](http://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
+
+## Reference
+
+1. Catherine A. Sugar and Gareth M. James(2003). "[Finding the number of
+   clusters in a data set: An information theoretic approach](http://www.tandfonline.com/doi/abs/10.1198/016214503000000666#.Uyfex9wRb1o)". Journal of the
+   American Statistical Association 98 (January): 750-763. 
