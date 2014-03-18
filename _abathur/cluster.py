@@ -35,7 +35,7 @@ class Clusterer(object):
         [1] Kanti Mardia et al. (1979). Multivariate Analysis. Academic Press.
         """
 
-        return round(np.sqrt(feat_array.shape[0] / 2.0))
+        return int(round(np.sqrt(feat_array.shape[0] / 2.0)))
 
     def _determine_k(self, feat_array, max_cluster=0):
         """
@@ -65,7 +65,7 @@ class Clusterer(object):
 
             clusters_dict = self._segment_to_clusters(whitened, code)
             mahalanobis_dist_list = []
-            for cid, cvals in clusters_dict:
+            for cid, cvals in clusters_dict.iteritems():
                 centroid = codebook[cid]
                 cluster_mahalanobis_dist = map(
                     lambda x: self._sq_mahalanobis(x, centroid, gamma),
@@ -77,9 +77,12 @@ class Clusterer(object):
         for k in xrange(1, max_cluster + 1):
             jump[k] = distortions_dict[k] - distortions_dict[k - 1]
 
-        return max(jump, key=jump.get)
+        best_k = max(jump, key=jump.get)
+        print "Chose {} as best number of clusters.".format(best_k)
 
-    def _segment_to_clusters(feat_array, code):
+        return best_k
+
+    def _segment_to_clusters(self, feat_array, code):
         feat_df = pd.DataFrame(feat_array)
         cluster_labels = pd.Series(code)
 
